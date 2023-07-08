@@ -1,0 +1,38 @@
+#include <LiquidCrystal_I2C.h>
+
+LiquidCrystal_I2C  ekran(0x27,16,2);
+int enA = 3;
+int in1= 4;
+int in2= 5;
+int potPin = A3;
+
+void setup() {
+  ekran.init();
+  pinMode(potPin, INPUT);
+  pinMode(enA, OUTPUT);
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+  // SOLA DÖNDEEER 
+  //digitalWrite(in1,HIGH);
+  //digitalWrite(in2,LOW );
+}
+
+void loop() {
+  motor();
+  ekran.setCursor(0,0);
+  ekran.print("DC motor kontrol");
+  digitalWrite(in1,HIGH);
+  digitalWrite(in2,LOW );
+  //analogWrite(enA, hiz_deger);
+  
+}
+void motor(){
+   int deger= analogRead(potPin);
+   int hiz_deger= map(deger ,0 ,1024, 0, 255);
+   analogWrite(enA, hiz_deger);
+   ekran.setCursor(0,1);
+   ekran.print("Hiz: ");
+   ekran.print(hiz_deger);
+   delay(750);
+   ekran.clear();
+}
