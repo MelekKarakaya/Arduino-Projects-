@@ -8,6 +8,7 @@ int potPin = A3;
 
 void setup() {
   ekran.init();
+  ekran.backlight();
   pinMode(potPin, INPUT);
   pinMode(enA, OUTPUT);
   pinMode(in1, OUTPUT);
