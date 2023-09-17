@@ -1,0 +1,50 @@
+#define ENCA 6
+#define ENCB 5
+#define PWM 9
+#define IN2 7
+#define IN1 8
+
+int pos = 0;
+int son;
+int ilk ; 
+int motorHizi = 150; // Motor hızı (0-255 arası değerler)
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(ENCA, INPUT);
+  pinMode(ENCB, INPUT);
+  pinMode(PWM, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(IN1, OUTPUT);
+
+  ilk = digitalRead(ENCA);
+  attachInterrupt(digitalPinToInterrupt(ENCA), readEncoder, RISING);
+}
+
+void loop() {
+   motor();
+   // İsteğe bağlı olarak diğer işlemleri de yapabilirsiniz
+   // Ancak kesme fonksiyonunda yapılan encoder okuma genellikle yeterli olacaktır.
+   
+}
+void motor(){
+   digitalWrite(IN1, HIGH);
+   digitalWrite(IN2, LOW);
+   analogWrite(PWM, motorHizi); 
+}
+
+void readEncoder() {
+  son = digitalRead(ENCA);
+  if (ilk != son) {
+    if (digitalRead(ENCB) != son) {
+      pos++;
+    } else {
+      if (pos > 0) { // Sıfırdan küçük olmamasını sağlayın
+        pos--;
+      }
+    }
+    Serial.print("Konum: ");
+    Serial.println(pos);
+    ilk = son;
+  }
+}
