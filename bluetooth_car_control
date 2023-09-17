@@ -1,0 +1,117 @@
+#include <SoftwareSerial.h>
+
+#define rxPin 3
+#define txPin 4
+
+SoftwareSerial bluetoothSerial(rxPin, txPin); // (rx, tx)
+
+char data;
+
+// Motor Pin Bağlantıları
+int motorA1 = 6;  // Motor A'nın yön pini 1
+int motorA2 = 7;  // Motor A'nın yön pini 2
+int motorB1 = 8;  // Motor B'nin yön pini 1
+int motorB2 = 9;  // Motor B'nin yön pini 2
+int pwm1 = 5;
+int pwm2 =10;
+
+// Fonksiyonlar
+void ileriGit() {
+  digitalWrite(motorA1, HIGH);
+  digitalWrite(motorA2, LOW);
+  digitalWrite(motorB1, HIGH);
+  digitalWrite(motorB2, LOW);
+  analogWrite(pwm1, 127);
+  analogWrite(pwm2, 127);
+  
+}
+
+void geriGit() {
+  digitalWrite(motorA1, LOW);
+  digitalWrite(motorA2, HIGH);
+  digitalWrite(motorB1, LOW);
+  digitalWrite(motorB2, HIGH);
+  analogWrite(pwm1, 127);
+  analogWrite(pwm2, 127);
+}
+
+void sagaDon() {
+  digitalWrite(motorA1, HIGH);
+  digitalWrite(motorA2, LOW);
+  digitalWrite(motorB1, LOW);
+  digitalWrite(motorB2, HIGH);
+  analogWrite(pwm1, 127);
+  analogWrite(pwm2, 127);
+}
+
+void solaDon() {
+  digitalWrite(motorA1, LOW);
+  digitalWrite(motorA2, HIGH);
+  digitalWrite(motorB1, HIGH);
+  digitalWrite(motorB2, LOW);
+  analogWrite(pwm1, 127);
+  analogWrite(pwm2, 127);
+}
+
+void dur() {
+  digitalWrite(motorA1, LOW);
+  digitalWrite(motorA2, LOW);
+  digitalWrite(motorB1, LOW);
+  digitalWrite(motorB2, LOW);
+}
+
+void setup() {
+  pinMode(motorA1, OUTPUT);
+  pinMode(motorA2, OUTPUT);
+  pinMode(motorB1, OUTPUT);
+  pinMode(motorB2, OUTPUT);
+  pinMode(pwm1, OUTPUT);
+  pinMode(pwm2, OUTPUT);
+  
+  pinMode(rxPin, INPUT); // Bluetooth modül RX pinini giriş olarak ayarla
+  pinMode(txPin, OUTPUT); // Bluetooth modül TX pinini çıkış olarak ayarla
+
+  Serial.begin(9600);
+  Serial.println("Merhaba Seri Port");
+
+  bluetoothSerial.begin(9600);
+  bluetoothSerial.println("Merhaba Bluetooth");
+}
+
+void loop() {
+  if (bluetoothSerial.available()) {
+    data = bluetoothSerial.read();
+    Serial.println(data);
+
+    if (data == '3') {
+      ileriGit();
+      delay(2000);
+      dur();
+      delay(1000);
+    } else if (data == '4') {
+      geriGit();
+      delay(2000);
+      dur();
+      delay(1000);
+    } else if (data == '1') {
+      sagaDon();
+      delay(50);
+      dur();
+      delay(1000);
+    } else if (data == '2') {
+      solaDon();
+      delay(50);
+      dur();
+      delay(1000);
+    } else {
+      dur();
+      delay(2000);
+    }
+  }
+
+  if (Serial.available()) {
+    data = Serial.read();
+    Serial.println(data);
+    bluetoothSerial.print(data);
+  }
+}
